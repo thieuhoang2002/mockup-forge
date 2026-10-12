@@ -1,0 +1,18 @@
+{
+  "tshirt_cream_front": {
+    "name": "Cotton Cream T-Shirt - Front View",
+    "template_file": "assets/tshirt_template.jpg",
+    "print_corners": [
+      [420, 360],
+      [780, 370],
+      [770, 840],
+      [430, 830]
+    ],
+    "settings": {
+      "displacement_strength": 6.0,
+      "shadow_strength": 0.80,
+      "is_dark_fabric": false,
+      "align": "top-center"
+    }
+  }
+}

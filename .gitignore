@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary user uploads and render cache
+uploads/*
+!uploads/.gitkeep
+
+# Output generated mockups
+output/*.jpg
+output/*.png
+!output/01_raw_design.png
+!output/02_auto_trimmed_design.png
+!output/03_displacement_map.png
+!output/04_shadow_map.png
+!output/05_naive_flat_mockup.jpg
+!output/06_photorealistic_mockup.jpg
+!output/07_side_by_side_comparison.jpg
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+*.temp

@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photorealistic POD Mockup Studio - Etsy & POD Listing Ready</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --panel-bg: #151d2c;
+            --card-bg: #0f172a;
+            --border-color: #2e3a4e;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --accent: #10b981;
+            --etsy-orange: #f97316;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header { background: #0c121e; border-bottom: 1px solid var(--border-color); padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-badge { background: linear-gradient(135deg, #f97316, #fb923c); color: #000; font-weight: 800; font-size: 12px; padding: 4px 10px; border-radius: 6px; }
+        h1 { font-size: 17px; font-weight: 700; color: #fff; }
+        .etsy-tag { background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
+        
+        .status-pill { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .status-dot { width: 7px; height: 7px; background: #34d399; border-radius: 50%; }
+
+        .main-layout { 
+            display: grid; 
+            grid-template-columns: 460px 1fr; 
+            height: calc(100vh - 53px); 
+            max-height: calc(100vh - 53px);
+            min-height: 0; 
+            overflow: hidden; 
+        }
+
+        .sidebar { 
+            background: var(--panel-bg); 
+            border-right: 1px solid var(--border-color); 
+            padding: 14px; 
+            height: 100%;
+            min-height: 0;
+            max-height: 100%;
+            overflow-y: scroll !important; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: #38bdf8 #0f172a;
+        }
+        .sidebar::-webkit-scrollbar { width: 10px; }
+        .sidebar::-webkit-scrollbar-track { background: #0f172a; }
+        .sidebar::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 5px; }
+        .sidebar::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+
+        /* STEP NAVIGATION TABS */
+        .nav-quick-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            background: #0b111e;
+            padding: 5px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .nav-tab-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .nav-tab-btn:hover { color: #f8fafc; background: rgba(255, 255, 255, 0.05); }
+        .nav-tab-btn.active {
+            background: var(--primary);
+            color: #0b111e;
+            box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .section-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upload-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .upload-box {
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: #090e17;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .upload-box:hover { border-color: var(--primary); background: #0f192b; }
+        .upload-box input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .upload-box .icon { font-size: 20px; }
+        .upload-box .lbl { font-size: 11px; font-weight: 600; color: #cbd5e1; }
+        .upload-thumb { width: 44px; height: 44px; object-fit: contain; border-radius: 4px; border: 1px solid var(--border-color); margin-top: 4px; background: #000; }
+        
+        .dimension-badge { font-size: 10px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 2px 6px; border-radius: 4px; margin-top: 2px; }
+        .etsy-check-badge { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-top: 2px; text-transform: uppercase; }
+        .badge-pass { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-warn { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+        .etsy-guide {
+            background: rgba(249, 115, 22, 0.08);
+            border: 1px dashed rgba(249, 115, 22, 0.35);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 11px;
+            color: #fdba74;
+            line-height: 1.4;
+        }
+
+        .canvas-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .canvas-btn-group { display: flex; gap: 4px; }
+        .tool-icon-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .tool-icon-btn:hover { background: #334155; color: #fff; }
+        .tool-icon-btn.active { background: var(--primary); color: #000; font-weight: bold; }
+
+        .canvas-container {
+            position: relative;
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+        #pointCanvas { display: block; cursor: crosshair; }
+        .zoom-level-tag { position: absolute; bottom: 6px; right: 8px; font-size: 10px; background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 4px; color: #94a3b8; font-weight: bold; pointer-events: none; }
+
+        .canvas-tip { font-size: 11px; color: #94a3b8; line-height: 1.4; }
+        .preset-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .preset-btn {
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            color: #cbd5e1;
+            padding: 6px 4px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .preset-btn:hover { background: #283548; color: var(--primary); border-color: var(--primary); }
+
+        .btn-step-next {
+            background: var(--primary);
+            color: #0b111e;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-step-next:hover { background: #7dd3fc; transform: translateY(-1px); }
+        .btn-step-back {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-step-back:hover { background: #283548; color: #fff; }
+
+        .control-group { display: flex; flex-direction: column; gap: 4px; }
+        .control-header { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: #cbd5e1; }
+        .control-val { color: var(--primary); font-weight: bold; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: #232f45;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; }
+        .toggle-switch { position: relative; width: 40px; height: 22px; display: inline-block; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background-color: #334155; border-radius: 22px; cursor: pointer; transition: 0.3s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .toggle-slider { background-color: var(--accent); }
+        input:checked + .toggle-slider:before { transform: translateX(18px); }
+
+        /* RIGHT PREVIEW PANE */
+        .preview-pane {
+            background: #090d16;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+        }
+        .preview-toolbar {
+            position: absolute;
+            top: 14px;
+            display: flex;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 4px 6px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            z-index: 20;
+        }
+        .tool-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tool-btn.active { background: var(--primary); color: #0f172a; font-weight: 700; }
+
+        .preview-stage {
+            max-width: 100%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .preview-img {
+            max-height: 78vh;
+            max-width: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        /* SPLIT COMPARISON SLIDER */
+        .split-slider-container { position: relative; width: auto; max-height: 78vh; overflow: hidden; display: none; }
+        .split-slider-container img { display: block; max-height: 78vh; width: auto; }
+        .split-modified { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 2px solid var(--primary); }
+        .split-modified img { max-height: 78vh; width: auto; max-width: none; }
+        .split-handle { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background: var(--primary); z-index: 10; cursor: ew-resize; }
+        .split-handle-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #0f172a; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* ETSY EXPORT ACTIONS */
+        .action-bar { position: absolute; bottom: 16px; display: flex; gap: 10px; z-index: 20; }
+        .btn-etsy { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35); display: flex; align-items: center; gap: 6px; }
+        .btn-etsy:hover { transform: translateY(-1px); }
+        .btn-download { background: #1e293b; color: #38bdf8; border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .btn-download:hover { background: #26334d; }
+
+        .latency-tag { font-size: 11px; color: #34d399; font-weight: 600; margin-left: 6px; }
+        .loading-spinner { display: none; position: absolute; z-index: 30; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border-color); font-size: 13px; color: var(--primary); font-weight: bold; }
+        .error-banner { display: none; position: absolute; top: 70px; z-index: 40; background: #ef4444; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="logo-badge">ETSY POD</span>
+            <h1>Photorealistic Mockup Studio</h1>
+            <span class="etsy-tag">US Listing Standard</span>
+        </div>
+        <div class="status-pill">
+            <span class="status-dot"></span>
+            <span>Live Engine Ready</span>
+            <span class="latency-tag" id="latencyTag">⚡ --ms</span>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <!-- LEFT SIDEBAR: STEP-BY-STEP TABBED INTERFACE -->
+        <div class="sidebar" id="sidebarEl">
+            <div class="nav-quick-tabs">
+                <button class="nav-tab-btn active" id="tabBtn1" onclick="switchSidebarTab(1)">📁 1. Upload</button>
+                <button class="nav-tab-btn" id="tabBtn2" onclick="switchSidebarTab(2)">🎯 2. Print Box</button>
+                <button class="nav-tab-btn" id="tabBtn3" onclick="switchSidebarTab(3)">⚙️ 3. Wrinkles</button>
+            </div>
+
+            <!-- PANEL 1: UPLOAD & ETSY SPECS -->
+            <div id="tabPanel1" class="tab-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="etsy-guide">
+                    <b>📌 Etsy Marketplace Standards (USA):</b><br>
+                    • <b>Listing Mockups:</b> Aspect ratio <b>4:3 (2700 × 2025 px)</b> or <b>1:1 (2000 × 2000 px)</b>.<br>
+                    • <b>Print POD Files:</b> <b>4500 × 5400 px @ 300 DPI (sRGB)</b>.
+                </div>
+
+                <div class="section-card">
+                    <div class="section-title">
+                        <span>1. Product Template & Design Files</span>
+                    </div>
+                    <div class="upload-row">
+                        <div class="upload-box" id="tplBox">
+                            <div class="icon">👕</div>
+                            <div class="lbl">Apparel Template</div>
+                            <div class="dimension-badge" id="tplDim">Loading...</div>
+                            <div class="etsy-check-badge badge-pass" id="tplEtsyBadge">Etsy Standard</div>
+                            <img id="tplThumb" class="upload-thumb" src="" alt="Tpl">
+                            <input type="file" id="templateInput" accept="image/*">
+                        </div>
+                        <div class="upload-box" id="dsgBox">
+                            <div class="icon">🎨</div>
+                            <div class="lbl">Design PNG</div>
+                            <div class="dimension-badge" id="dsgDim">Loading...</div>
+                            <div class="etsy-check-badge badge-pass" id="dsgEtsyBadge">Auto-Trim RGBA</div>
+                            <img id="dsgThumb" class="upload-thumb" src="" alt="Dsg">
+                            <input type="file" id="designInput" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-step-next" onclick="switchSidebarTab(2)">
+                    Continue: Set Print Area On Garment ➡️
+                </button>
+            </div>
+
+            <!-- PANEL 2: PRINT BOX CANVAS -->
+            <div id="tabPanel2" class="tab-panel" style="display: none; flex-direction: column; gap: 10px;">
+                <div class="section-card">
+                    <div class="canvas-toolbar">
+                        <span style="font-size: 11px; font-weight: 700; color: #cbd5e1; text-transform: uppercase;">2. Print Box (4 Corner Warp)</span>
+                        <div class="canvas-btn-group">
+                            <button class="tool-icon-btn" onclick="scaleDesign(0.9)" title="Scale down PNG design by 10%" style="color: #38bdf8; font-weight: bold;">➖ PNG</button>
+                            <button class="tool-icon-btn" onclick="scaleDesign(1.1)" title="Scale up PNG design by 10%" style="color: #38bdf8; font-weight: bold;">➕ PNG</button>
+                            <button class="tool-icon-btn" onclick="resetCanvasView()" title="Fit garment to view">⟲ Fit View</button>
+                            <button class="tool-icon-btn" id="panToolBtn" onclick="togglePanMode()" title="Enable pan tool">✋ Pan</button>
+                        </div>
+                    </div>
+
+                    <div class="canvas-container" id="canvasContainer" style="height: 280px;">
+                        <canvas id="pointCanvas"></canvas>
+                        <div class="zoom-level-tag" id="zoomTag">100%</div>
+                    </div>
+
+                    <!-- INTERACTIVE PNG SCALE CONTROLS -->
+                    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; margin: 8px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span style="font-size: 11px; font-weight: 700; color: #38bdf8;">📏 PNG Design Scale:</span>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <button class="tool-icon-btn" onclick="scaleDesign(0.9)" title="Shrink 10%" style="padding: 2px 7px; font-size: 11px; font-weight: bold;">➖</button>
+                                <span id="pngScalePercent" style="font-size: 11px; font-weight: bold; color: #f8fafc; min-width: 44px; text-align: center;">100%</span>
+                                <button class="tool-icon-btn" onclick="scaleDesign(1.1)" title="Enlarge 10%" style="padding: 2px 7px; font-size: 11px; font-weight: bold;">➕</button>
+                                <button class="tool-icon-btn" onclick="resetPngScale()" title="Reset to 100%" style="padding: 2px 6px; font-size: 10px; color: #94a3b8;">100%</button>
+                            </div>
+                        </div>
+                        <input type="range" id="pngScaleSlider" min="30" max="250" step="5" value="100" style="width: 100%;">
+                    </div>
+
+                    <div class="canvas-tip">
+                        👉 <b>Click ➕ / ➖</b> or <b>drag slider</b> to resize design • <b>Drag 4 red handles</b> for 3D perspective • <b>Drag blue box</b> to reposition.
+                    </div>
+
+                    <div class="preset-row">
+                        <button class="preset-btn" onclick="applyPreset('center_chest')">Center Chest</button>
+                        <button class="preset-btn" onclick="applyPreset('left_pocket')">Left Pocket</button>
+                        <button class="preset-btn" onclick="applyPreset('full_front')">Full Front</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-step-back" onclick="switchSidebarTab(1)">⬅️ Back</button>
+                    <button class="btn-step-next" style="flex: 2;" onclick="switchSidebarTab(3)">Continue: Optics & Wrinkles ➡️</button>
+                </div>
+            </div>
+
+            <!-- PANEL 3: WRINKLES & LIGHTING OPTICS -->
+            <div id="tabPanel3" class="tab-panel" style="display: none; flex-direction: column; gap: 12px;">
+                <div class="section-card">
+                    <div class="section-title">
+                        <span>3. Fabric Wrinkles & Optical Blending</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Displacement Strength:</span>
+                            <span class="control-val" id="dispVal">6.0 px</span>
+                        </div>
+                        <input type="range" id="dispSlider" min="0" max="20" step="0.5" value="6.0">
+                        <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">Recommended: 4.0 - 8.0 px for natural Photoshop Smart Object warp</div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-label">Shadow Strength:</span>
+                            <span class="control-val" id="shadowVal">0.80</span>
+                        </div>
+                        <input type="range" id="shadowSlider" min="0.0" max="1.5" step="0.05" value="0.80">
+                        <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">0.0 = Flat (No shading) • 0.8 - 1.2 = Natural • 1.5 = Deep Creases</div>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div>
+                            <span class="control-label">Dark Fabric Mode (Black/Dark Garment):</span>
+                            <div style="font-size: 10px; color: #94a3b8; margin-top: 2px;">Enable manually for black, navy, or charcoal shirts</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkFabricToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section-card" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+                    <div style="font-size: 12px; color: #34d399; font-weight: 700; margin-bottom: 4px;">✨ Ready To Export Mockup:</div>
+                    <div style="font-size: 11px; color: #cbd5e1; line-height: 1.4;">
+                        Inspect the result in the preview pane on the right and click 1-Click Etsy 4:3 or 1:1 export below!
+                    </div>
+                </div>
+
+                <button class="btn-step-back" onclick="switchSidebarTab(2)">
+                    ⬅️ Back To Print Box
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT PANE: LIVE PREVIEW -->
+        <div class="preview-pane">
+            <div class="error-banner" id="errorBanner"></div>
+            <div class="loading-spinner" id="spinner">Computing optical matrices...</div>
+
+            <div class="preview-toolbar">
+                <button class="tool-btn active" id="btnModeReal" onclick="switchViewMode('realistic')">✨ Photorealistic (Wrinkles & Shadow)</button>
+                <button class="tool-btn" id="btnModeFlat" onclick="switchViewMode('flat')">❌ Traditional Flat</button>
+                <button class="tool-btn" id="btnModeSplit" onclick="switchViewMode('split')">↔️ Split Slider</button>
+            </div>
+
+            <div class="preview-stage" id="singleStage">
+                <img id="mainPreviewImg" class="preview-img" src="" alt="Live Mockup Preview">
+            </div>
+
+            <div class="preview-stage split-slider-container" id="splitStage">
+                <img id="splitFlatImg" src="" alt="Flat Base">
+                <div class="split-modified" id="splitModified">
+                    <img id="splitRealImg" src="" alt="Realistic Overlay">
+                </div>
+                <div class="split-handle" id="splitHandle">
+                    <div class="split-handle-btn">⇄</div>
+                </div>
+            </div>
+
+            <!-- EXPORT ACTION BUTTONS -->
+            <div class="action-bar">
+                <button class="btn-etsy" onclick="downloadEtsyMockup('4_3')">
+                    <span>⭐</span> Download Etsy 4:3 (2700×2025)
+                </button>
+                <button class="btn-etsy" onclick="downloadEtsyMockup('1_1')" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <span>⬛</span> Download Etsy 1:1 (2000×2000)
+                </button>
+                <button class="btn-download" onclick="downloadHDMockup()">
+                    <span>💾</span> Download Original HD
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = {
+            template_filename: "",
+            design_filename: "",
+            original_w: 1200,
+            original_h: 1400,
+            design_w: 1600,
+            design_h: 1600,
+            corners: [[420, 360], [780, 370], [770, 840], [430, 830]],
+            displacement_strength: 6.0,
+            shadow_strength: 0.80,
+            is_dark_fabric: false,
+            pngScale: 100,
+            currentViewMode: 'realistic',
+            real_b64: "",
+            flat_b64: "",
+            download_id: "",
+            scale: 1.0,
+            panX: 0,
+            panY: 0,
+            activePointIdx: -1,
+            isMovingEntireQuad: false,
+            isPanning: false,
+            panModeEnabled: false,
+            lastMouseX: 0,
+            lastMouseY: 0
+        };
+
+        const canvas = document.getElementById("pointCanvas");
+        const container = document.getElementById("canvasContainer");
+        const ctx = canvas.getContext("2d");
+        let tplPreviewImg = new Image();
+
+        function switchSidebarTab(tabNum) {
+            document.querySelectorAll(".nav-tab-btn").forEach(b => b.classList.remove("active"));
+            const activeBtn = document.getElementById("tabBtn" + tabNum);
+            if (activeBtn) activeBtn.classList.add("active");
+
+            document.getElementById("tabPanel1").style.display = (tabNum === 1) ? "flex" : "none";
+            document.getElementById("tabPanel2").style.display = (tabNum === 2) ? "flex" : "none";
+            document.getElementById("tabPanel3").style.display = (tabNum === 3) ? "flex" : "none";
+
+            if (tabNum === 2) {
+                setTimeout(resetCanvasView, 50);
+            }
+        }
+
+        // 1. INITIALIZATION
+        async function init() {
+            try {
+                const res = await fetch("/api/load_default_assets");
+                const data = await res.json();
+                if (data.success) {
+                    state.template_filename = data.template_filename;
+                    state.design_filename = data.design_filename;
+                    state.original_w = data.template_width;
+                    state.original_h = data.template_height;
+                    state.design_w = data.design_width;
+                    state.design_h = data.design_height;
+                    state.corners = data.default_corners;
+
+                    updateDimensionBadges();
+                    triggerLiveRender();
+
+                    tplPreviewImg.onload = () => {
+                        resetCanvasView();
+                    };
+                    tplPreviewImg.src = `/api/get_image/${state.template_filename}`;
+                    document.getElementById("tplThumb").src = tplPreviewImg.src;
+                    document.getElementById("dsgThumb").src = `/api/get_image/${state.design_filename}`;
+
+                    if (tplPreviewImg.complete) {
+                        resetCanvasView();
+                    }
+                }
+            } catch (err) {
+                console.error("Init error:", err);
+            }
+        }
+
+        function updateDimensionBadges() {
+            document.getElementById("tplDim").innerText = `${state.original_w} × ${state.original_h} px`;
+            document.getElementById("dsgDim").innerText = `${state.design_w} × ${state.design_h} px`;
+
+            const isEtsyHD = Math.max(state.original_w, state.original_h) >= 2000;
+            const badge = document.getElementById("tplEtsyBadge");
+            badge.innerText = isEtsyHD ? "✅ Etsy HD Ready" : "⚠️ Recommend ≥2000px";
+            badge.className = "etsy-check-badge " + (isEtsyHD ? "badge-pass" : "badge-warn");
+        }
+
+        // 2. CANVAS VIEW MATRIX (ZOOM & PAN)
+        function resetCanvasView() {
+            const cw = container.clientWidth > 0 ? container.clientWidth : 430;
+            const ch = container.clientHeight > 0 ? container.clientHeight : 280;
+            canvas.width = cw;
+            canvas.height = ch;
+
+            const scaleX = canvas.width / state.original_w;
+            const scaleY = canvas.height / state.original_h;
+            state.scale = Math.min(scaleX, scaleY);
+            state.panX = (canvas.width - state.original_w * state.scale) / 2;
+            state.panY = (canvas.height - state.original_h * state.scale) / 2;
+
+            updateZoomTag();
+            drawCanvas();
+        }
+
+        function applyCornerScale(factor) {
+            if (!state.corners || state.corners.length !== 4) return;
+            let cx = 0, cy = 0;
+            for (let i = 0; i < 4; i++) {
+                cx += state.corners[i][0];
+                cy += state.corners[i][1];
+            }
+            cx /= 4.0;
+            cy /= 4.0;
+
+            state.corners = state.corners.map(pt => {
+                let nx = cx + (pt[0] - cx) * factor;
+                let ny = cy + (pt[1] - cy) * factor;
+                return [
+                    Math.max(0, Math.min(state.original_w, Math.round(nx))),
+                    Math.max(0, Math.min(state.original_h, Math.round(ny)))
+                ];
+            });
+
+            drawCanvas();
+            debounceRender();
+        }
+
+        function scaleDesign(factor) {
+            const current = state.pngScale || 100;
+            const target = Math.max(30, Math.min(250, Math.round(current * factor)));
+            if (target === current) return;
+            const actualFactor = target / current;
+            state.pngScale = target;
+            
+            const label = document.getElementById("pngScalePercent");
+            if (label) label.innerText = target + "%";
+            const slider = document.getElementById("pngScaleSlider");
+            if (slider) slider.value = target;
+
+            applyCornerScale(actualFactor);
+        }
+
+        function setPngScale(targetVal) {
+            const target = Math.max(30, Math.min(250, parseInt(targetVal) || 100));
+            const current = state.pngScale || 100;
+            if (target === current) return;
+            const factor = target / current;
+            state.pngScale = target;
+            
+            const label = document.getElementById("pngScalePercent");
+            if (label) label.innerText = target + "%";
+            const slider = document.getElementById("pngScaleSlider");
+            if (slider) slider.value = target;
+
+            applyCornerScale(factor);
+        }
+
+        function resetPngScale() {
+            const current = state.pngScale || 100;
+            if (current === 100) return;
+            const factor = 100.0 / current;
+            state.pngScale = 100;
+            
+            const label = document.getElementById("pngScalePercent");
+            if (label) label.innerText = "100%";
+            const slider = document.getElementById("pngScaleSlider");
+            if (slider) slider.value = 100;
+
+            applyCornerScale(factor);
+        }
+
+        function zoomCanvas(factor) {
+            const newScale = Math.max(0.15, Math.min(6.0, state.scale * factor));
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            state.panX = centerX - (centerX - state.panX) * (newScale / state.scale);
+            state.panY = centerY - (centerY - state.panY) * (newScale / state.scale);
+            state.scale = newScale;
+            updateZoomTag();
+            drawCanvas();
+        }
+
+        function updateZoomTag() {
+            document.getElementById("zoomTag").innerText = Math.round(state.scale * 100) + "%";
+        }
+
+        function togglePanMode() {
+            state.panModeEnabled = !state.panModeEnabled;
+            const btn = document.getElementById("panToolBtn");
+            btn.classList.toggle("active", state.panModeEnabled);
+            canvas.style.cursor = state.panModeEnabled ? "grab" : "crosshair";
+        }
+
+        function toCanvasCoord(pt) {
+            return [pt[0] * state.scale + state.panX, pt[1] * state.scale + state.panY];
+        }
+
+        function toOriginalCoord(cx, cy) {
+            return [
+                Math.round((cx - state.panX) / state.scale),
+                Math.round((cy - state.panY) / state.scale)
+            ];
+        }
+
+        function isPointInQuad(px, py, pts) {
+            let inside = false;
+            for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+                const xi = pts[i][0], yi = pts[i][1];
+                const xj = pts[j][0], yj = pts[j][1];
+                const intersect = ((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+            return inside;
+        }
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (tplPreviewImg.complete && tplPreviewImg.naturalWidth > 0) {
+                ctx.drawImage(tplPreviewImg, state.panX, state.panY, state.original_w * state.scale, state.original_h * state.scale);
+            }
+
+            const pts = state.corners.map(toCanvasCoord);
+
+            // Print Area Quad
+            ctx.beginPath();
+            ctx.moveTo(pts[0][0], pts[0][1]);
+            ctx.lineTo(pts[1][0], pts[1][1]);
+            ctx.lineTo(pts[2][0], pts[2][1]);
+            ctx.lineTo(pts[3][0], pts[3][1]);
+            ctx.closePath();
+            ctx.fillStyle = "rgba(56, 189, 248, 0.32)";
+            ctx.fill();
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = "#38bdf8";
+            ctx.setLineDash([6, 6]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Center Reposition Handle
+            let cx = 0, cy = 0;
+            pts.forEach(p => { cx += p[0]; cy += p[1]; });
+            cx /= 4; cy /= 4;
+            ctx.beginPath();
+            ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(56, 189, 248, 0.9)";
+            ctx.fill();
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 4 Corner Control Handles
+            const labels = ["TL", "TR", "BR", "BL"];
+            pts.forEach((pt, i) => {
+                ctx.beginPath();
+                ctx.arc(pt[0], pt[1], 10, 0, Math.PI * 2);
+                ctx.fillStyle = (i === state.activePointIdx) ? "#f59e0b" : "#ef4444";
+                ctx.fill();
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#ffffff";
+                ctx.stroke();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 11px sans-serif";
+                ctx.fillText(labels[i], pt[0] + 12, pt[1] - 8);
+            });
+        }
+
+        // 3. MOUSE WHEEL ZOOM
+        function handleWheel(e) {
+            if (e.ctrlKey || e.metaKey || state.panModeEnabled) {
+                e.preventDefault();
+                e.stopPropagation();
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const factor = e.deltaY < 0 ? 1.15 : 0.85;
+                const newScale = Math.max(0.15, Math.min(6.0, state.scale * factor));
+                state.panX = mouseX - (mouseX - state.panX) * (newScale / state.scale);
+                state.panY = mouseY - (mouseY - state.panY) * (newScale / state.scale);
+                state.scale = newScale;
+
+                updateZoomTag();
+                drawCanvas();
+            }
+        }
+
+        container.addEventListener("wheel", handleWheel, { passive: false });
+        canvas.addEventListener("wheel", handleWheel, { passive: false });
+
+        // 4. MOUSE DRAG HANDLERS
+        canvas.addEventListener("mousedown", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            state.lastMouseX = mx;
+            state.lastMouseY = my;
+
+            if (e.button === 2 || state.panModeEnabled) {
+                state.isPanning = true;
+                canvas.style.cursor = "grabbing";
+                return;
+            }
+
+            const pts = state.corners.map(toCanvasCoord);
+            state.activePointIdx = pts.findIndex(pt => Math.hypot(pt[0] - mx, pt[1] - my) < 22);
+            if (state.activePointIdx !== -1) {
+                drawCanvas();
+                return;
+            }
+
+            if (isPointInQuad(mx, my, pts)) {
+                state.isMovingEntireQuad = true;
+                canvas.style.cursor = "move";
+                return;
+            }
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const dx = mx - state.lastMouseX;
+            const dy = my - state.lastMouseY;
+            state.lastMouseX = mx;
+            state.lastMouseY = my;
+
+            if (state.isPanning) {
+                state.panX += dx;
+                state.panY += dy;
+                drawCanvas();
+                return;
+            }
+
+            if (state.isMovingEntireQuad) {
+                const imgDx = dx / state.scale;
+                const imgDy = dy / state.scale;
+                state.corners = state.corners.map(pt => [Math.round(pt[0] + imgDx), Math.round(pt[1] + imgDy)]);
+                drawCanvas();
+                debounceRender();
+                return;
+            }
+
+            if (state.activePointIdx !== -1) {
+                state.corners[state.activePointIdx] = toOriginalCoord(mx, my);
+                drawCanvas();
+                debounceRender();
+                return;
+            }
+
+            if (!state.panModeEnabled) {
+                const pts = state.corners.map(toCanvasCoord);
+                const isHoverHandle = pts.some(pt => Math.hypot(pt[0] - mx, pt[1] - my) < 22);
+                if (isHoverHandle) {
+                    canvas.style.cursor = "pointer";
+                } else if (isPointInQuad(mx, my, pts)) {
+                    canvas.style.cursor = "move";
+                } else {
+                    canvas.style.cursor = "crosshair";
+                }
+            }
+        });
+
+        window.addEventListener("mouseup", () => {
+            if (state.isPanning) {
+                state.isPanning = false;
+                canvas.style.cursor = state.panModeEnabled ? "grab" : "crosshair";
+            }
+            if (state.isMovingEntireQuad) {
+                state.isMovingEntireQuad = false;
+                triggerLiveRender();
+            }
+            if (state.activePointIdx !== -1) {
+                state.activePointIdx = -1;
+                drawCanvas();
+                triggerLiveRender();
+            }
+        });
+
+        canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+        // 5. UPLOAD LISTENERS
+        document.getElementById("templateInput").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/upload_template", { method: "POST", body: formData });
+            const data = await res.json();
+            if (data.success) {
+                state.template_filename = data.filename;
+                state.original_w = data.width;
+                state.original_h = data.height;
+                state.corners = data.default_corners;
+
+                updateDimensionBadges();
+                tplPreviewImg.src = `/api/get_image/${state.template_filename}`;
+                document.getElementById("tplThumb").src = tplPreviewImg.src;
+
+                tplPreviewImg.onload = () => {
+                    resetCanvasView();
+                    triggerLiveRender();
+                };
+            } else {
+                alert("Upload error: " + data.error);
+            }
+        });
+
+        document.getElementById("designInput").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("/api/upload_design", { method: "POST", body: formData });
+            const data = await res.json();
+            if (data.success) {
+                state.design_filename = data.filename;
+                state.design_w = data.width;
+                state.design_h = data.height;
+
+                updateDimensionBadges();
+                document.getElementById("dsgThumb").src = `/api/get_image/${state.design_filename}`;
+                state.pngScale = 100;
+                const scaleLbl = document.getElementById("pngScalePercent");
+                if (scaleLbl) scaleLbl.innerText = "100%";
+                const scaleSld = document.getElementById("pngScaleSlider");
+                if (scaleSld) scaleSld.value = 100;
+
+                triggerLiveRender();
+            } else {
+                alert("Upload error: " + data.error);
+            }
+        });
+
+        // 6. PRESET BOXES
+        function applyPreset(type) {
+            const w = state.original_w;
+            const h = state.original_h;
+            if (type === 'center_chest') {
+                state.corners = [
+                    [Math.round(w * 0.32), Math.round(h * 0.25)],
+                    [Math.round(w * 0.68), Math.round(h * 0.25)],
+                    [Math.round(w * 0.66), Math.round(h * 0.60)],
+                    [Math.round(w * 0.34), Math.round(h * 0.60)]
+                ];
+            } else if (type === 'left_pocket') {
+                state.corners = [
+                    [Math.round(w * 0.58), Math.round(h * 0.28)],
+                    [Math.round(w * 0.72), Math.round(h * 0.28)],
+                    [Math.round(w * 0.72), Math.round(h * 0.44)],
+                    [Math.round(w * 0.58), Math.round(h * 0.44)]
+                ];
+            } else if (type === 'full_front') {
+                state.corners = [
+                    [Math.round(w * 0.26), Math.round(h * 0.23)],
+                    [Math.round(w * 0.74), Math.round(h * 0.23)],
+                    [Math.round(w * 0.72), Math.round(h * 0.78)],
+                    [Math.round(w * 0.28), Math.round(h * 0.78)]
+                ];
+            }
+            state.pngScale = 100;
+            const scaleLbl = document.getElementById("pngScalePercent");
+            if (scaleLbl) scaleLbl.innerText = "100%";
+            const scaleSld = document.getElementById("pngScaleSlider");
+            if (scaleSld) scaleSld.value = 100;
+
+            drawCanvas();
+            triggerLiveRender();
+        }
+
+        // 7. CONTROL SLIDERS
+        const pngScaleSlider = document.getElementById("pngScaleSlider");
+        if (pngScaleSlider) {
+            pngScaleSlider.addEventListener("input", (e) => {
+                setPngScale(e.target.value);
+            });
+        }
+
+        const dispSlider = document.getElementById("dispSlider");
+        dispSlider.addEventListener("input", (e) => {
+            state.displacement_strength = parseFloat(e.target.value);
+            document.getElementById("dispVal").innerText = state.displacement_strength + " px";
+            debounceRender();
+        });
+
+        const shadowSlider = document.getElementById("shadowSlider");
+        shadowSlider.addEventListener("input", (e) => {
+            state.shadow_strength = parseFloat(e.target.value);
+            document.getElementById("shadowVal").innerText = state.shadow_strength;
+            debounceRender();
+        });
+
+        const darkToggle = document.getElementById("darkFabricToggle");
+        darkToggle.addEventListener("change", (e) => {
+            state.is_dark_fabric = e.target.checked;
+            triggerLiveRender();
+        });
+
+        let renderTimer = null;
+        function debounceRender() {
+            clearTimeout(renderTimer);
+            renderTimer = setTimeout(triggerLiveRender, 60);
+        }
+
+        // 8. LIVE RENDER API
+        async function triggerLiveRender() {
+            if (!state.template_filename || !state.design_filename) return;
+
+            const payload = {
+                template_filename: state.template_filename,
+                design_filename: state.design_filename,
+                corners: state.corners,
+                displacement_strength: state.displacement_strength,
+                shadow_strength: state.shadow_strength,
+                is_dark_fabric: state.is_dark_fabric
+            };
+
+            try {
+                const res = await fetch("/api/render_live", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success && data.realistic_base64) {
+                    state.real_b64 = data.realistic_base64;
+                    state.flat_b64 = data.flat_base64;
+                    state.download_id = data.download_id;
+
+                    document.getElementById("latencyTag").innerText = `⚡ ${data.elapsed_ms}ms`;
+                    document.getElementById("errorBanner").style.display = "none";
+                    updatePreviewDisplay();
+                } else {
+                    console.error("Render failed:", data.error);
+                }
+            } catch (err) {
+                console.error("Render network error:", err);
+            }
+        }
+
+        function updatePreviewDisplay() {
+            const mainImg = document.getElementById("mainPreviewImg");
+            const singleStage = document.getElementById("singleStage");
+            const splitStage = document.getElementById("splitStage");
+
+            if (state.currentViewMode === 'realistic') {
+                singleStage.style.display = 'flex';
+                splitStage.style.display = 'none';
+                mainImg.src = state.real_b64;
+            } else if (state.currentViewMode === 'flat') {
+                singleStage.style.display = 'flex';
+                splitStage.style.display = 'none';
+                mainImg.src = state.flat_b64;
+            } else if (state.currentViewMode === 'split') {
+                singleStage.style.display = 'none';
+                splitStage.style.display = 'block';
+                document.getElementById("splitFlatImg").src = state.flat_b64;
+                document.getElementById("splitRealImg").src = state.real_b64;
+            }
+        }
+
+        function switchViewMode(mode) {
+            state.currentViewMode = mode;
+            document.querySelectorAll(".tool-btn").forEach(btn => btn.classList.remove("active"));
+            if (mode === 'realistic') document.getElementById("btnModeReal").classList.add("active");
+            if (mode === 'flat') document.getElementById("btnModeFlat").classList.add("active");
+            if (mode === 'split') document.getElementById("btnModeSplit").classList.add("active");
+            updatePreviewDisplay();
+        }
+
+        // 9. SPLIT COMPARISON DRAG HANDLER
+        const splitStage = document.getElementById("splitStage");
+        const splitHandle = document.getElementById("splitHandle");
+        const splitModified = document.getElementById("splitModified");
+        let isSlidingSplit = false;
+
+        splitHandle.addEventListener("mousedown", () => isSlidingSplit = true);
+        window.addEventListener("mouseup", () => isSlidingSplit = false);
+        window.addEventListener("mousemove", (e) => {
+            if (!isSlidingSplit) return;
+            const rect = splitStage.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const pct = (x / rect.width) * 100;
+            splitHandle.style.left = pct + "%";
+            splitModified.style.width = pct + "%";
+        });
+
+        // 10. ETSY & HD EXPORT DOWNLOADS
+        function downloadEtsyMockup(ratio) {
+            if (!state.download_id) {
+                alert("Please wait for render to complete!");
+                return;
+            }
+            window.location.href = `/api/download_etsy/${state.download_id}?ratio=${ratio}`;
+        }
+
+        function downloadHDMockup() {
+            if (!state.download_id) {
+                alert("Please wait for render to complete!");
+                return;
+            }
+            window.location.href = `/api/get_image/${state.download_id}`;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
