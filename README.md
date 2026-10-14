@@ -35,12 +35,6 @@ Traditional mockup tools often paste flat 2D designs over product photos, result
 ### Before vs. After: Traditional Flat vs. MockupForge Optical Engine
 ![Side by Side Quality](docs/images/05_side_by_side_quality.jpg)
 
-### Interactive Web Studio
-![Interactive Web Studio Overview](docs/images/01_studio_overview.png)
-
-### 4-Point 3D Perspective Box & Live PNG Scale
-![Print Box & Perspective](docs/images/02_print_box_warp.png)
-
 ### Optical Maps: Wrinkle Displacement & Lighting Modulation
 <div align="center">
   <img src="docs/images/06_displacement_map.png" width="48%" alt="Displacement Map"/>
